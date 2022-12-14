@@ -9,6 +9,8 @@
     import Axios from "axios";
     import { useEffect } from "react";
     import { getPreciseDistance } from 'geolib';
+    import { DateRange } from "react-date-range";
+    import { addDays } from 'date-fns';
 
     
     export default function HomeCard() {
@@ -27,6 +29,23 @@
             console.log(err);
             }
         }
+        const [state, setState] = useState([
+            {
+                startDate: new Date(),
+                endDate: new Date(),
+                key: 'selection'
+            }
+        ]);
+
+        var disabledDates = [
+            new Date("2022-12-20"),
+            new Date("2022-12-21"),
+            new Date("2022-12-22"),
+            new Date("2022-12-23"),
+        ];
+
+
+        console.log(state)
 
         useEffect(() => {
             getdata()
@@ -36,9 +55,22 @@
         <>
             <Center>
                 <Flex flexWrap={"wrap"} justifyContent="center"  position="relative" bgColor="white" mt="3" >
-                    {data?.records.map((item) => {
+                <DateRange
+                    fixedHeight={true}
+                    rangeColors={["#07AEAF"]}
+                    editableDateInputs={true}
+                    onChange={item => setState([item.selection])}
+                    minDate={addDays(new Date(), 0)}
+                    maxDate={addDays(new Date(), 30)}
+                    moveRangeOnFirstSelection={false}
+                    ranges={state}
+                    // disabledDates={disabledDates}
+                    showSelectionPreview={false}
+                    />
+
+                    {data?.records.map((item, index) => {
                     return (
-                        <Box _hover={{ cursor: "pointer" }} w="230px" h="220px" m="6px" >
+                        <Box _hover={{ cursor: "pointer" }} w="230px" h="220px" m="6px" key={index} >
                         <Box borderRadius="13px" borderTopRadius="13px" overflow="hidden">
                             <Image objectFit="cover" src={item.fields.xl_picture_url} width="230px" height="150px" />
                         </Box>
